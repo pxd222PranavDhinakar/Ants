@@ -2,18 +2,22 @@
 
 let nodeCountInput, regenerateButton;
 let nodes = []; // Global array to store nodes
-let edges = []; // Global array to store edges
+//let edges = []; // Global array to store edges
 let ant = null; // Global variable to track ant
 let sidebarWidth = 200; // Width of the sidebar for metrics and buttons
-let nodeCount = 10; // Default number of nodes to create
+let nodeCount = 30; // Default number of nodes to create
 let minDistance = 50; // Minimum distance between nodes
 let currentNode = null; // Variable to store the currently selected node
 let desirability; // Global desirability value
 let desirabilitySlider; // Global slider object
 
 let antCountInput; // Input for the number of ants
-let antCount = 1; // Default number of ants
+let antCount = 3; // Default number of ants
 let placeAntsButton;
+let ants = []; // Global array to store ants
+let stepping = false
+
+
 
 
 
@@ -53,14 +57,22 @@ function setup() {
   antCountInput.attribute('type', 'number');
   antCountInput.attribute('min', '1'); // Minimum value
 
-  // Create a label for the ant count input
-  let antCountLabel = createElement('label', 'Number of Ants:');
-  antCountLabel.position(20, 160);
-
   // Create 'Place Ants' button
   placeAntsButton = createButton('Place Ants');
   placeAntsButton.position(20, 220); // Adjust the position as needed
-  //placeAntsButton.mousePressed(placeAnts); 
+  placeAntsButton.mousePressed(placeAnts);  // Handle 'Place Ants' button click
+
+  // Create 'Step' button
+  StepButton = createButton('Step');
+  StepButton.position(20, 250); // Adjust the position as needed
+  StepButton.mousePressed(startStep);  // Handle 'Place Ants' button click
+
+  // Create 'Stop' button
+  StepButton = createButton('Stop');
+  StepButton.position(20, 280); // Adjust the position as needed
+  StepButton.mousePressed(stop);  // Handle 'Place Ants' button click
+
+
 }
 
 
@@ -80,21 +92,28 @@ function draw() {
   }
 
   // Draw the ant
-  if (ant){
+  //if (ant){
+  //  ant.update(); // Update Ant animation
+  //  ant.display(); // Draw the Ant
+  //}
+
+  // Draw the ants
+  ants.forEach(ant => {
     ant.update(); // Update Ant animation
     ant.display(); // Draw the Ant
-  }
 
-  
-  // Update and draw all edges, and remove them if they are done retracting
-  for (let i = edges.length - 1; i >= 0; i--) {
-    edges[i].update();
-    if (edges[i].toRemove) {
-        edges.splice(i, 1); // Remove the edge
-    } else {
-        edges[i].display(); // Only display the edge if it's not removed
+    // For each ant update and draw all edges, and remove them if they are done retracting
+    for (let i = ant.edges.length - 1; i >= 0; i--) {
+      ant.edges[i].update();
+      if (ant.edges[i].toRemove) {
+          ant.edges.splice(i, 1); // Remove the edge
+      } else {
+          ant.edges[i].display(); // Only display the edge if it's not removed
+      }
     }
-  }
+
+  });
+
 
   // Update and draw all edges
   //edges.forEach(edge => {
@@ -139,10 +158,26 @@ function mousePressed() {
       }
 
   });
-
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   background(50); // Maintain the graphite gray background after resizing
+}
+
+function startStep(){
+  stepping = true;
+  multiStep();
+}
+
+function multiStep(){
+  step();
+  if (stepping == true){
+    setTimeout(multiStep, 2000); // Adjust delay as necessary
+  }
+}
+
+// Function to stop stepping through the algorithm
+function stop(){
+  stepping = false;
 }

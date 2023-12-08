@@ -35,11 +35,12 @@ class Node {
         //console.log("Radius: ", this.radius)
         if (d < this.radius) {
             
-            //console.log("Node " + this.id + " was clicked.");
+            console.log("Node " + this.id + " was clicked.");
 
             // Reset selection for all nodes
             nodes.forEach(n => n.selected = false);
 
+            /*
             if (ant == null) {
                 // Create a new ant if one doesn't exist
                 ant = new AntNode(0, this.x, this.y, this);
@@ -60,6 +61,7 @@ class Node {
                 //ant.startMoving(this); // Start animating towards this node
                 //console.log("Ant moved from Node: " + ant.path[ant.path.length-2].id + " to Node: " + ant.path[ant.path.length-1].id);
             }
+            */
 
             // At this point the ant has been either made on this node or moved to this node
             // Set this node as selected
@@ -101,7 +103,8 @@ function createNodes() {
 // Function to regenerate nodes based on the input value
 function regenerateNodes() {
     edges = []; // Clear existing edges
-    ant = null; // Clear existing ant
+    //ant = null; // Clear existing ant
+    ants = [] // Clear existing ants
 
     // Update the node count based on input value
     nodeCount = parseInt(nodeCountInput.value());
